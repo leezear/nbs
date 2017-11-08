@@ -30,7 +30,6 @@ int main(const int argc, char ** argv) {
 	vector<string> files;
 	getFilesAll(bmp_root + argv[1], files);
 
-
 	int64_t sum_but = 0;
 	int64_t sum_sact = 0;
 	int64_t sum_st = 0;
@@ -38,10 +37,11 @@ int main(const int argc, char ** argv) {
 	int64_t num_sac = 0;
 	int64_t num_sol = 0;
 	int64_t num_has_sol = 0;
+	int64_t num_bm = 0;
 
 	for (const auto f : files) {
-
 		cout << f << endl;
+		++num_bm;
 
 		HModel *hm = new HModel();
 		GetHModel(f, hm);
@@ -81,6 +81,11 @@ int main(const int argc, char ** argv) {
 		" || Solve time =" << sum_st <<
 		" || nodes = " << sum_nod <<
 		" || has solution = " << num_has_sol << endl;
+	std::cout << "---------------------------------n2-avg---------------------------------" << endl;
+	std::cout <<
+		"sum time = " << sum_st / (num_sol) <<
+		" || brs = " << sum_nod / (num_sol) <<
+		" || time out = " << num_sac - num_sol << endl;
 	return 0;
 }
 
