@@ -14,7 +14,7 @@ using namespace std;
 
 
 const string XPath = "BMPath.xml";
-const int64_t TimeLimit = 400000;
+const int64_t TimeLimit = 1800000;
 const string bmp_root = "E:\\Projects\\benchmarks\\xcsp\\";
 const string bmp_ext = ".xml";
 void getFilesAll(string path, vector<string>& files);
