@@ -14,7 +14,7 @@ using namespace std;
 
 
 const string XPath = "BMPath.xml";
-const int64_t TimeLimit = 1800000;
+const int64_t TimeLimit = 400000;
 const string bmp_root = "E:\\Projects\\benchmarks\\xcsp\\";
 const string bmp_ext = ".xml";
 void getFilesAll(string path, vector<string>& files);
@@ -40,7 +40,8 @@ int main(const int argc, char ** argv) {
 	int64_t num_bm = 0;
 
 	for (const auto f : files) {
-		cout << f << endl;
+		//cout << f << endl;
+		int64_t solve_time = 0;
 		++num_bm;
 
 		HModel *hm = new HModel();
@@ -53,6 +54,7 @@ int main(const int argc, char ** argv) {
 		const bool result = sac1.enforce();
 		const int64_t sac_time = t.elapsed();
 		sum_sact += sac_time;
+		solve_time += sac_time;
 
 		if (result) {
 			//sat sac
@@ -60,32 +62,37 @@ int main(const int argc, char ** argv) {
 			const SearchStatistics statistics = StartSearch(gm, Heuristic::VRH_MIN_DOM, Heuristic::VLH_MIN, TimeLimit, sac_time);
 
 			sum_but += statistics.build_time;
+			solve_time += statistics.build_time;
 
 			if (!statistics.time_out) {
 				sum_st += statistics.solve_time;
 				++num_sol;
 				num_has_sol += statistics.num_sol;
 				sum_nod += statistics.nodes;
+				solve_time += statistics.solve_time;
 			}
+			else
+				solve_time += TimeLimit;
 		}
 
+		cout << solve_time << endl;
 		delete hm;
 		delete gm;
 	}
 
-	cout << "---------------sum---------------" << endl;
-	cout << "SAC time = " << sum_sact <<
-		" || SAC count = " << num_sac <<
-		" || Build time = " << sum_but <<
-		" || num solve = " << num_sol <<
-		" || Solve time =" << sum_st <<
-		" || nodes = " << sum_nod <<
-		" || has solution = " << num_has_sol << endl;
-	std::cout << "---------------------------------n2-avg---------------------------------" << endl;
-	std::cout <<
-		"sum time = " << sum_st / (num_sol) <<
-		" || brs = " << sum_nod / (num_sol) <<
-		" || time out = " << num_sac - num_sol << endl;
+	//cout << "---------------sum---------------" << endl;
+	//cout << "SAC time = " << sum_sact <<
+	//	" || SAC count = " << num_sac <<
+	//	" || Build time = " << sum_but <<
+	//	" || num solve = " << num_sol <<
+	//	" || Solve time =" << sum_st <<
+	//	" || nodes = " << sum_nod <<
+	//	" || has solution = " << num_has_sol << endl;
+	//std::cout << "---------------------------------n2-avg---------------------------------" << endl;
+	//std::cout <<
+	//	"sum time = " << sum_st / (num_sol) <<
+	//	" || brs = " << sum_nod / (num_sol) <<
+	//	" || time out = " << num_sac - num_sol << endl;
 	return 0;
 }
 
